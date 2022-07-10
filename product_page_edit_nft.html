@@ -1,0 +1,64 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.4/web3.min.js" integrity="sha512-oMd9Re3VgJcXuZJn9DN6X7S7JUc7xLYZ2UyZ85Mm/xzaW3lwBr4fV2zjuu/n5jY/Of/2JOx35CTa6zvQNxb31Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script language="javascript" type="text/javascript" src="https://cdn.shopify.com/s/files/1/0526/4097/2955/files/StoreHeroesToken_abi.js?v=1657385912"></script>
+<script>
+  var StoreHeroes;
+  var account;
+  var chainId;
+
+  const getAccount = async () => {
+      try {
+          const account = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          if (account.length > 0) {
+              document.getElementById("nft-connect").style.visibility = "hidden"; 
+              document.getElementById("nft-purchase").style.visibility = "visible";
+              return account[0];
+          } else {
+              return "";
+          }
+      } catch (err) {
+          if (err.code === 4001) {
+              console.log('Please connect to MetaMask.');
+          } else {
+              console.error(err);
+          }
+          return "";
+      }
+  }
+
+  function startApp() {
+    var StoreHeroesAddress = "0xe5b78419dafF03AaE93B464A7d1fb89D3154cDA1";
+    StoreHeroes = new web3js.eth.Contract(StoreHeroesABI, StoreHeroesAddress);
+    account = getAccount();
+  }
+
+  window.addEventListener('load', function() {
+    if (typeof web3 !== 'undefined') {
+      web3js = new Web3(web3.currentProvider);
+    }
+  })
+
+  const mintToken = async = () => {
+    document.getElementById("nft-purchase").style.visibility = "hidden"; 
+    document.getElementById("nft-pause").style.visibility = "visible";
+    try {
+      StoreHeroes.methods
+      .mintStoreHero(3)
+      .send({
+            from: '0xA0e7178Bd457eeb8705d31110e3D8F09D24b1DDF',
+            value: 100,
+            gasPrice: '0x09184e72a000',
+            gas: '141850',
+
+            })
+      .then(function(receipt) { 
+        console.log(receipt) 
+        document.getElementById("nft-pause").style.visibility = "hidden"; 
+        document.getElementById("nft-purchased").style.visibility = "visible";
+      })
+    }
+    catch (err) {
+      console.log(err);
+      return false;
+    }
+  }
+</script>
